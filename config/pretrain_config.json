@@ -1,0 +1,14 @@
+{
+    "d_model": 512,
+    "dropout": 0.1,
+    "num_heads": 8,
+    "nb_layer": 4 ,
+    "activation": "leakyrelu",
+    "PreTraining_model_path": "./model/PreTraining.pth",
+    "Save_model_path": "./model/PreTraining.pth",
+    "start_lr": 1e-4,
+    "end_lr": 1e-6,
+    "rate": 0.999,
+    "step_size": 200,
+    "epochs": 100
+}

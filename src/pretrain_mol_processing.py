@@ -341,15 +341,15 @@ def Generate_dataloader(mol_train, mol_val, mol_test):
                 new_mol_test.append(j)
 
         if i <= 15:
-            bsz = 3072
-        elif i <= 30:
-            bsz = 2048
-        elif i <= 45:
             bsz = 1024
-        elif i <= 60:
+        elif i <= 30:
             bsz = 512
+        elif i <= 45:
+            bsz = 350
+        elif i <= 60:
+            bsz = 256
         else:
-            bsz = 128
+            bsz = 32
         num_train_dataloader = int(np.ceil(len(new_mol_train)/bsz))
         num_val_dataloader = int(np.ceil(len(new_mol_val)/bsz))
         num_test_dataloader = int(np.ceil(len(new_mol_test)/bsz))

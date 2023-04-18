@@ -282,8 +282,7 @@ class GAT(nn.Module):
         self.norm1_edge = nn.modules.normalization.LayerNorm(d_model)
         self.norm2_edge = nn.modules.normalization.LayerNorm(d_model)
         
-        self.GATLayer = GraphAttentionLayer(d_model=d_model, dropout=dropout, num_heads=num_heads, activation=activation, leakyrelu=leakyrelu) 
-        self.layers = self._get_clones(self.GATLayer, nb_layer)
+        self.layers = self._get_clones(GraphAttentionLayer(d_model=d_model, dropout=dropout, num_heads=num_heads, activation=activation, leakyrelu=leakyrelu), nb_layer)
 
     def _get_clones(self, module, N):
         return nn.modules.container.ModuleList([copy.deepcopy(module) for i in range(N)])

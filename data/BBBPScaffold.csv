@@ -1,5 +1,4 @@
 num,name,p_np,smiles
-1631,204,204,
 2,Terbutylchlorambucil,1,C(=O)(OC(C)(C)C)CCCc1ccc(cc1)N(CCCl)CCCl
 22,Dexamfetamine,1,C[C@H](N)Cc1ccccc1
 136,chlorambucil,0,OC(=O)CCCc1ccc(cc1)N(CCCl)CCCl

@@ -221,8 +221,7 @@ def load_data(dataset):
         file = pd.read_csv('./data/' + dataset + '.csv', header=0)
     else:
         file = pd.read_csv('./data/' + dataset + 'Scaffold.csv', header=0)
-        file.drop(file.index[0],inplace=True)
-        file = file.reset_index(drop=True)
+        
     task_name = ['logP', 'qed', 'SAS'] if dataset == '250k' else []
     if 'smiles' in file:
         smi_name = 'smiles'

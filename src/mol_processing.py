@@ -13,8 +13,9 @@ RDLogger.DisableLog('rdApp.*') #hiding the warning messages
 import torch
 
 def get_mol_max_length(dataset):
-    all_smiles_y, num_train, num_val, num_test = load_data(dataset)
-    assert len(all_smiles_y) == num_train + num_val + num_test
+    all_smiles_y = load_data(dataset)
+    num_train = int(len(all_smiles_y) * 0.8)
+    num_val = int(len(all_smiles_y) * 0.1)
     train_smiles_y = all_smiles_y[:num_train]
     val_smiles_y = all_smiles_y[num_train:num_train+num_val]
     test_smiles_y = all_smiles_y[num_train+num_val:]
@@ -100,15 +101,6 @@ def load_data(dataset, task_name=None):
         
     print('Read and process the collected data...')
     file = pd.read_csv('./data/' + dataset + 'Scaffold.csv', header=0)
-    num_train = int(file.iloc[0][0])
-    num_val = int(file.iloc[0][1])
-    if file.shape[1] == 2:
-        num_test = file.shape[0] - 1 - num_train - num_val
-    else:
-        num_test = int(file.iloc[0][2])
-        
-    file.drop(file.index[0],inplace=True)
-    file = file.reset_index(drop=True)
 
     if 'smiles' in file:
         smi_name = 'smiles'
@@ -128,7 +120,7 @@ def load_data(dataset, task_name=None):
         for j in task_name:
             target.append(file[j][i])
         all_smiles_y.append([file[smi_name][i],target])
-    return all_smiles_y, num_train, num_val, num_test
+    return all_smiles_y
 
 class Molecule():
     def __init__(self, smiles_y, dataset, bool_random=True, max_len=100, max_ring=15, print_info=False):
@@ -259,7 +251,7 @@ def Read_mol_data(dataset, task_name=None, target_type='classification'):
     train_max_len, val_max_len, test_max_len = max_len[dataset]
     nb_cpu = 10
     nb_time_processing = 20
-    all_smiles_y, num_train, num_val, num_test = load_data(dataset, task_name)
+    all_smiles_y = load_data(dataset, task_name)
     
     if target_type == 'classification':
         mean = std = None
@@ -274,7 +266,8 @@ def Read_mol_data(dataset, task_name=None, target_type='classification'):
     pos_times_ClinTox = 12 
     pos_times_MUV = 2
 
-    assert len(all_smiles_y) == num_train + num_val + num_test
+    num_train = int(len(all_smiles_y) * 0.8)
+    num_val= int(len(all_smiles_y) * 0.1)
     train_smiles_y = all_smiles_y[:num_train]
     val_smiles_y = all_smiles_y[num_train:num_train+num_val]
     test_smiles_y = all_smiles_y[num_train+num_val:]

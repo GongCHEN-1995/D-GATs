@@ -24,7 +24,7 @@ D-GATs follow the common framework of MPNNs and explore a bond-level message pas
 D-GATs' pre-training strategy
 ------------------------------
 
-
+According to our message passing algorithm, the atom states are updated by directed bond states but independent to the update of bond states. Therefore, the successful recovery of atom features relies on the ability to correctly recover the masked bond features. Hence, we only need to recover atom features in the pre-training stage.
 <p align="center"><img src="figure/masked.png" width=80%></p>
 
 D-GATs' performance

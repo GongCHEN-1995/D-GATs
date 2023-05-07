@@ -1,3 +1,12 @@
+Directed Message Passing Based on Attention for Prediction of Molecular Properties
+==================================================================================
+
+Authors: Gong CHEN, Yvon MADAY
+
+D-GATs follow the common framework of MPNNs and explore a bond-level message passing algorithm completely relying on scaled dot-product attention mechanism, which outperforms SOTA baselines on 13/15 molecular property prediction tasks on the MoleculeNet benchmark.
+
+<p align="center"><img src="figure/framework.png" width=80%></p>
+
 Dependencies
 ------------
 
@@ -18,15 +27,6 @@ Utilization
 If you want to pre-train a model, the configuration is specified in config/pretrain_config.json. You only need to use jupyter notebook to open Pre-training.ipynb and to run the code.
 
 If you want to finetune a model, the configuration is specified in config/config.json. You only need to use jupyter notebook to open finetune.ipynb and to run the code.
-
-Directed Message Passing Based on Attention for Prediction of Molecular Properties
-==================================================================================
-
-Authors: Gong CHEN, Yvon MADAY
-
-D-GATs follow the common framework of MPNNs and explore a bond-level message passing algorithm completely relying on scaled dot-product attention mechanism, which outperforms SOTA baselines on 13/15 molecular property prediction tasks on the MoleculeNet benchmark.
-
-<p align="center"><img src="figure/framework.png" width=80%></p>
 
 D-GATs' pre-training strategy
 -----------------------------

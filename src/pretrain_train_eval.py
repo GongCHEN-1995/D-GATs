@@ -108,11 +108,12 @@ def Train_NN(model, train_dl, val_dl, test_dl, best_score, epochs=1, start_lr=1e
         
         train_loss /= len(train_dl)
         
-        torch.cuda.empty_cache()
+        if torch.cuda.is_available():
+            torch.cuda.empty_cache()
         val_loss, val_acc = Test_NN(model, val_dl)
-        torch.cuda.empty_cache()
         test_loss, test_acc = Test_NN(model, test_dl)
-        torch.cuda.empty_cache()
+        if torch.cuda.is_available():
+            torch.cuda.empty_cache()
         elapsed = time.time() - epoch_start_time
         
         print('| {:4d}/{:4d} epoch| lr {:.1e} | {:3.1f} min |'.format(epoch, epochs, optimizer.state_dict()['param_groups'][0]['lr'], elapsed/60))
@@ -124,7 +125,7 @@ def Train_NN(model, train_dl, val_dl, test_dl, best_score, epochs=1, start_lr=1e
             best_score[2,10:] = test_acc
             torch.save(model.to('cpu').state_dict(), store_name)
             print('New best model', store_name, 'saved!')
-            model = model.to('cuda')
+            model = model.to('cuda' if torch.cuda.is_available() else 'cpu')
         print('Train Loss {:.2e} {:.2e} {:.2e} {:.2e} {:.2e} {:.2e} {:.2e} {:.2e} {:.2e} {:.2e}'.format(\
                 train_loss[0],train_loss[1],train_loss[2],train_loss[3],train_loss[4],train_loss[5],train_loss[6],train_loss[7],train_loss[8],train_loss[9]))
         print('Val   Loss {:.2e} {:.2e} {:.2e} {:.2e} {:.2e} {:.2e} {:.2e} {:.2e} {:.2e} {:.2e}'.format(\

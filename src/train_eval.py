@@ -54,7 +54,8 @@ def Train_NN(dataset, model, train_dl, val_dl, test_dl, best_score, epochs=1, st
             pos_weight[1,i] = np.sum(all_targets[:,i]==1)
 
         pos_weight = pos_weight[0,:] / pos_weight[1,:]
-        pos_weight = torch.Tensor(pos_weight).cuda()
+        pos_weight = torch.Tensor(pos_weight).to('cuda' if torch.cuda.is_available() else 'cpu')
+        
         loss_BCE = nn.BCEWithLogitsLoss(pos_weight=pos_weight)
     elif target_type == 'regression':
         if torch.cuda.is_available():
@@ -109,10 +110,12 @@ def Train_NN(dataset, model, train_dl, val_dl, test_dl, best_score, epochs=1, st
         train_loss /= len(train_dl)
         if metrics == 'RMSE':
             train_loss = np.sqrt(train_loss)
-        torch.cuda.empty_cache()
+        if torch.cuda.is_available():
+            torch.cuda.empty_cache()
         val_loss, val_auc = Test_NN(dataset, model, val_dl, metrics, target_type, mean, std)
         test_loss, test_auc = Test_NN(dataset, model, test_dl, metrics, target_type, mean, std)
-        torch.cuda.empty_cache()
+        if torch.cuda.is_available():
+            torch.cuda.empty_cache()
         if val_auc.max() > 0 and 0 in val_auc:
             val_auc = val_auc[val_auc.nonzero()]
         if test_auc.max() > 0 and 0 in test_auc:

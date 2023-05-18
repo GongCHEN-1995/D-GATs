@@ -292,7 +292,7 @@ class GAT(nn.Module):
         edge_len = edge_features.size(1)
         bsz = edge_features.size(0)
 
-        CLS_mask = torch.cat([torch.zeros(bsz,1).cuda(), node_features[:,:,0]], dim=1).unsqueeze(1).unsqueeze(1)
+        CLS_mask = torch.cat([torch.zeros(bsz,1).to(node_features.device), node_features[:,:,0]], dim=1).unsqueeze(1).unsqueeze(1)
         CLS_mask = CLS_mask > 0
         CLS = self.CLS.expand(bsz, self.d_model)
         edges_all = edge_features[:,:,:2].cpu().numpy().astype(int).tolist()
@@ -339,14 +339,14 @@ class GAT(nn.Module):
                 node_mask_all[i,j,[node_len+p for p in dict_edge_node[j]]] = 1
                 node_mask_all[i,j,j] = 1
             edge_mask_all[i,:,:] = edge_mask
-            edge2_index2 = torch.LongTensor(edge2_index2).to('cuda' if torch.cuda.is_available() else 'cpu')  
-            edge2_index3 = torch.LongTensor(edge2_index3).to('cuda' if torch.cuda.is_available() else 'cpu')
+            edge2_index2 = torch.LongTensor(edge2_index2).to(node_features.device)  
+            edge2_index3 = torch.LongTensor(edge2_index3).to(node_features.device)
             edge_x[i,:2*len(edges),:] += torch.index_select(node_x2[i,:,:], 0, edge2_index2)
             edge_x[i,:2*len(edges),:] += torch.index_select(node_x3[i,:,:], 0, edge2_index3)
         
         edge_x = self.norm2_edge(self.edge_W(edge_x))
-        edge_mask_all = ~torch.LongTensor(edge_mask_all).to(torch.bool).to('cuda' if torch.cuda.is_available() else 'cpu')
-        node_mask_all = ~torch.LongTensor(node_mask_all).to(torch.bool).to('cuda' if torch.cuda.is_available() else 'cpu')
+        edge_mask_all = ~torch.LongTensor(edge_mask_all).to(torch.bool).to(node_features.device)
+        node_mask_all = ~torch.LongTensor(node_mask_all).to(torch.bool).to(node_features.device)
         
         node_x, CLS = self.node_attention(node_x, edge_x, CLS, node_mask_all, CLS_mask)
         all_CLS = CLS

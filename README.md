@@ -18,7 +18,8 @@ conda create -n D_GATs python=3.8
 conda activate D_GATs
 conda install -c anaconda jupyter
 conda install -c rdkit rdkit
-conda install -c conda-forge pytorch-gpu
+conda install -c conda-forge pytorch-gpu 
+(or) conda install -c conda-forge pytorch
 ```
 
 Utilization

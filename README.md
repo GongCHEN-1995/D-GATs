@@ -50,7 +50,7 @@ Citation
 
 Please kindly cite this paper if you use the code.
 ```
-not published yet
+https://arxiv.org/abs/2305.14819
 ```
 
 License

@@ -13,7 +13,7 @@ RDLogger.DisableLog('rdApp.*') #hiding the warning messages
 import torch
 
 def get_mol_max_length(dataset):
-    all_smiles_y = load_data(dataset)
+    all_smiles_y = load_data(dataset, print_info=False)
     num_train = int(len(all_smiles_y) * 0.8)
     num_val = int(len(all_smiles_y) * 0.1)
     train_smiles_y = all_smiles_y[:num_train]
@@ -42,7 +42,7 @@ def get_mol_max_length(dataset):
             nb_atom = 0
         cc.append(nb_atom)
 
-    dd = np.zeros(10)
+    dd = np.zeros(10) # Number of mol with different number of atoms [0, 0-25, 25-50, 50-75, 75-100, 100-150, 150-200, 200-250, >250]
     for i in aa:
         if i == 0:
             dd[0] += 1
@@ -63,9 +63,9 @@ def get_mol_max_length(dataset):
         else:
             dd[8] += 1
             
-    return dd # Number of mol with different number of atoms [0, 0-25, 25-50, 50-75, 75-100, 100-150, 150-200, 200-250, >250]
+    return max(max(aa), max(bb), max(cc)) 
 
-def load_data(dataset, task_name=None):
+def load_data(dataset, task_name=None, print_info=True):
     if task_name == None:
         if dataset == 'BACE':
             task_name = ['Class', 'pIC50']
@@ -107,11 +107,12 @@ def load_data(dataset, task_name=None):
     else:
         smi_name = 'mol'
         
-    print('----------------------------------------')
-    print('Dataset: ', dataset)
-    print('Example: ')
-    print(file.iloc[0])
-    print('Number of molecules:', file.shape[0])
+    if print_info:
+        print('----------------------------------------')
+        print('Dataset: ', dataset)
+        print('Example: ')
+        print(file.iloc[0])
+        print('Number of molecules:', file.shape[0])
         
     all_smiles_y = []
     file = file.where(pd.notnull(file), -1)
@@ -248,11 +249,16 @@ def Read_mol_data(dataset, task_name=None, target_type='classification'):
     assert target_type in ['classification', 'regression']
     max_len = {'Tox21':[100, 135, 125], 'HIV': [225, 150, 185], 'SIDER':[500, 500, 500], 'MUV':[45, 50, 45], 'BBBP':[135, 125, 100], 'BACE':[100, 60, 100], 'ClinTox':[125, 140, 95], 'ToxCast':[125, 100, 110], 'PCBA':[350, 350, 350], 'ESOL':[55, 40, 45], 'FreeSolv':[25, 25, 25], 'Lipo':[115, 100, 65], 'QM7':[7, 7, 7], 'QM8':[8, 8, 8], 'QM9':[9, 9, 9]}
 
-    train_max_len, val_max_len, test_max_len = max_len[dataset]
     nb_cpu = 10
     nb_time_processing = 20
     all_smiles_y = load_data(dataset, task_name)
     
+    if dataset in max_len:
+        train_max_len, val_max_len, test_max_len = max_len[dataset]
+    else:
+        max_len = get_mol_max_length(dataset)
+        train_max_len = val_max_len = test_max_len = max_len
+        
     if target_type == 'classification':
         mean = std = None
     else:
